@@ -19,12 +19,16 @@ function retrieveItemsFromCache() {
 function displayItem(item) {
     const article = makeArticle(item)
     displayArticle(article)
-    console.log(article)
     const imageDiv = makeImageDiv(item)
     article.appendChild(imageDiv)
     const cardItemContent = makeCartContent(item)
     article.appendChild(cardItemContent)
+    displayTotalQuantity(item)
+}
 
+function displayTotalQuantity(item) {
+    const TotalQuantity = document.querySelector("#totalQuantity")
+TotalQuantity.textContent = item.quantity
 }
 
 /*function makeCardItemContent(item) {
@@ -48,7 +52,17 @@ function makeSettings(item) {
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
     addQuantityToSettings(settings, item)
+    addDeleteToSettings (settings)
     return settings
+}
+
+function addDeleteToSettings(settings) {
+    const div = document.createElement("div")
+    div.classList.add("cart__item__content__settings__delete")
+const p = document.createElement("p")
+p.textContent = "Supprimer"
+div.appendChild(p)
+settings.appendChild(div)
 }
 
 function addQuantityToSettings(settings, item) {
@@ -64,7 +78,8 @@ function addQuantityToSettings(settings, item) {
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
-    settings.appendChild(input)
+    quantity.appendChild(input)
+    settings.appendChild(quantity)
 }
 
 function makeDescription(item) {
@@ -98,7 +113,6 @@ function displayArticle(article) {
 
 function makeArticle(item) {
     const article = document.createElement("article")
-    console.log(article)
     article.classList.add("card__item")
     article.dataset.id = item.id
     article.dataset.color = item.color
