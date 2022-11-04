@@ -23,12 +23,37 @@ function displayItem(item) {
     article.appendChild(imageDiv)
     const cardItemContent = makeCartContent(item)
     article.appendChild(cardItemContent)
-    displayTotalQuantity(item)
+    displayTotalPrice()
+    displayTotalQuantity()
 }
 
-function displayTotalQuantity(item) {
-    const TotalQuantity = document.querySelector("#totalQuantity")
-TotalQuantity.textContent = item.quantity
+function displayTotalQuantity() {
+    const totalQuantity = document.querySelector("#totalQuantity")
+    //const total = cart.reduce((total, item) => total + item.quantity, 0)
+    //
+
+    let totalUnit = 0
+    cart.forEach(item => {
+        totalUnit += item.quantity
+    })
+    totalQuantity.textContent = totalUnit
+}
+
+function displayTotalPrice() {
+    let total = 0;
+    const totalPrice = document.querySelector("#totalPrice")
+    //const total = cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    cart.forEach(item => {
+        const totalUnitPrice = item.price * item.quantity
+        total += totalUnitPrice
+    })
+
+    totalPrice.textContent = total
+
+    /* const firstItem = cart [0]
+ const firstItemTotalQuantity = firstItem.quantity * firstItem.price
+ 
+ console.log(firstItemTotalQuantity)*/
 }
 
 /*function makeCardItemContent(item) {
@@ -52,17 +77,36 @@ function makeSettings(item) {
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
     addQuantityToSettings(settings, item)
-    addDeleteToSettings (settings)
+    addDeleteToSettings(settings, item)
     return settings
 }
 
-function addDeleteToSettings(settings) {
+function addDeleteToSettings(settings, item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
-const p = document.createElement("p")
-p.textContent = "Supprimer"
-div.appendChild(p)
-settings.appendChild(div)
+    div.addEventListener("click", () => deleteItem(item))
+
+    const p = document.createElement("p")
+    p.textContent = "Supprimer"
+    div.appendChild(p)
+    settings.appendChild(div)
+}
+
+function deleteItem(item) {
+    const itemToDelete = cart.find(product => product.id === item.id && product.color === item.color)
+    cart.splice(itemToDelete, 1)
+    console.log(itemToDelete)
+displayTotalPrice()
+displayTotalQuantity()
+deleteDataFromCach(item)
+deleteArticleFromPage(item)
+}
+
+function deleteArticleFromPage(item) {
+    const articleToDelete = document.querySelector(
+        `article[data-id="${item.id}"][data-color="${item.color}"]`
+    )
+    articleToDelete.remove()
 }
 
 function addQuantityToSettings(settings, item) {
@@ -78,8 +122,32 @@ function addQuantityToSettings(settings, item) {
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
+
+    input.addEventListener("input", () => updatePriceAndQuantity(item.id, input.value, item))
+    
     quantity.appendChild(input)
     settings.appendChild(quantity)
+}
+
+function updatePriceAndQuantity(id, newValue, item) {
+    const itemToUpdate = cart.find((item) => item.id === id)
+    itemToUpdate.quantity = Number(newValue)
+    item.quantity = itemToUpdate.quantity
+    displayTotalQuantity()
+    displayTotalPrice()
+    // saveNewDataToCache(item)
+    deleteDataFromCach(item)
+}
+
+function deleteDataFromCach(item) {
+    const key = `${item.id}-${item.color}`
+    localStorage.removeItem(key)
+}
+
+function saveNewDataToCache(item) {
+    const dataToSave = JSON.stringify(item)
+console.log(dataToSave)
+localStorage.setItem(item.id, dataToSave)
 }
 
 function makeDescription(item) {

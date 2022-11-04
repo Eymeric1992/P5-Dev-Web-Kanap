@@ -1,7 +1,7 @@
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const id = urlParams.get("id")
-if ( id != null) {
+if (id != null) {
     let itemPrice = 0
     let imgUrl, altText, articleName
 }
@@ -40,7 +40,7 @@ function makeTitle(name) {
 
 function makePrice(price) {
     const p = document.querySelector("#price")
-    if (price != null)p.textContent = price
+    if (price != null) p.textContent = price
 }
 
 
@@ -54,36 +54,57 @@ function makeColors(colors) {
     if (select != null) {
         colors.forEach((color) => {
             const option = document.createElement("option")
-      option.value = color
-      option.textContent = color
-      select.appendChild(option)
+            option.value = color
+            option.textContent = color
+            select.appendChild(option)
         })
     }
 }
 let addToCart = document.querySelector("#addToCart")
 addToCart.addEventListener('click', function (e) {
-  const color = document.querySelector("#colors").value
-  const quantity = document.querySelector("#quantity").value
-if (color == null || color === "" || quantity < 1 || quantity == null){
-  alert ("Veuillez selectionner une couleur et une quantité")
-  return
-}
-saveCart(color, quantity)
+    const color = document.querySelector("#colors").value
+    const quantity = document.querySelector("#quantity").value
+    if (color == null || color === "" || quantity < 1 || quantity == null) {
+        alert("Veuillez selectionner une couleur et une quantité")
+        return
+    }
+    saveCart(color, quantity)
 
 
-window.location.href = "cart.html"
+    window.location.href = "cart.html"
 })
 
-  
-function saveCart (color, quantity){
-    const data = {
-        id : id,
-        color : color,
-        quantity: Number(quantity),
-        price: itemPrice,
-        imageUrl: imgUrl,
-        altTxt: altText,
-        name: articleName,
-      }
-      localStorage.setItem(id, JSON.stringify(data))
+
+function saveCart(color, quantity) {
+    let product = localStorage.getItem(id + color)
+    product = JSON.parse(product)
+
+    if (product == null || color !== product.color) {
+        const data = {
+            id: id,
+            color: color,
+            quantity: Number(quantity),
+            price: itemPrice,
+            imageUrl: imgUrl,
+            altTxt: altText,
+            name: articleName,
+        }
+
+        localStorage.setItem(id + color, JSON.stringify(data))
+    } else {
+   
+       let newQuantity = Number(product.quantity) + Number(quantity)
+        const data = {
+            id: id,
+            color: color,
+            quantity: Number(newQuantity),
+            price: itemPrice,
+            imageUrl: imgUrl,
+            altTxt: altText,
+            name: articleName,
+        }
+
+        localStorage.setItem(id + color, JSON.stringify(data))
+    }
+
 }
