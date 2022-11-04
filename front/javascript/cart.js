@@ -95,7 +95,6 @@ function addDeleteToSettings(settings, item) {
 function deleteItem(item) {
     const itemToDelete = cart.find(product => product.id === item.id && product.color === item.color)
     cart.splice(itemToDelete, 1)
-    console.log(itemToDelete)
 displayTotalPrice()
 displayTotalQuantity()
 deleteDataFromCach(item)
@@ -146,7 +145,6 @@ function deleteDataFromCach(item) {
 
 function saveNewDataToCache(item) {
     const dataToSave = JSON.stringify(item)
-console.log(dataToSave)
 localStorage.setItem(item.id, dataToSave)
 }
 
