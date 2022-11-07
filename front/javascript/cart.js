@@ -33,9 +33,11 @@ function displayTotalQuantity() {
     //
 
     let totalUnit = 0
-    cart.forEach(item => {
+    cart.find(item => {
         totalUnit += item.quantity
     })
+    console.log(totalUnit, cart)
+
     totalQuantity.textContent = totalUnit
 }
 
@@ -93,8 +95,8 @@ function addDeleteToSettings(settings, item) {
 }
 
 function deleteItem(item) {
-    const itemToDelete = cart.find(product => product.id === item.id && product.color === item.color)
-    cart.splice(itemToDelete, 1)
+    const itemToDelete = cart.findIndex((product) => product.id === item.id && product.color === item.color)
+    cart.splice(itemToDelete, 0)
 displayTotalPrice()
 displayTotalQuantity()
 deleteDataFromCach(item)
@@ -129,23 +131,38 @@ function addQuantityToSettings(settings, item) {
 }
 
 function updatePriceAndQuantity(id, newValue, item) {
-    const itemToUpdate = cart.find((item) => item.id === id)
+   
+    const itemToUpdate = cart.find((item) => item.id === id )
+    console.log("voici l'item a mettre a jour",itemToUpdate)
     itemToUpdate.quantity = Number(newValue)
+    console.log("la nouvelle valeur est", itemToUpdate.quantity)
     item.quantity = itemToUpdate.quantity
+    console.log("la quantité affiché est de",item.quantity)
+    
     displayTotalQuantity()
     displayTotalPrice()
-    // saveNewDataToCache(item)
-    deleteDataFromCach(item)
+   saveNewDataToCache(item)
+//deleteDataFromCach(item)
 }
+
+
+
+
 
 function deleteDataFromCach(item) {
     const key = `${item.id}-${item.color}`
-    localStorage.removeItem(key)
+    console.log("on retire cette key", key)
+    localStorage.removeItem(item.id)
 }
 
 function saveNewDataToCache(item) {
+    const idcolor = item.id + item.color
     const dataToSave = JSON.stringify(item)
-localStorage.setItem(item.id, dataToSave)
+    console.log("la data a sauvegardé est", dataToSave)
+  
+
+localStorage.setItem(idcolor, dataToSave)
+console.log("la nouvelle valeur stockée est", localStorage)
 }
 
 function makeDescription(item) {

@@ -12,7 +12,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
     .then((res) => displayData(res))
 
 function displayData(content) {
-    const { altTxt, colors, description, imageUrl, name, price, _id } = content
+    const { altTxt, colors, description, imageUrl, name, price} = content
     makeImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
@@ -75,7 +75,8 @@ addToCart.addEventListener('click', function (e) {
 })
 
 
-function saveCart(color, quantity) {
+function saveCart(color, quantity,) {
+    
     let product = localStorage.getItem(id + color)
     product = JSON.parse(product)
 
@@ -91,7 +92,7 @@ function saveCart(color, quantity) {
         }
 
         localStorage.setItem(id + color, JSON.stringify(data))
-    } else {
+    }  else {
    
        let newQuantity = Number(product.quantity) + Number(quantity)
         const data = {
