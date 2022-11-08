@@ -124,14 +124,14 @@ function addQuantityToSettings(settings, item) {
     input.max = "100"
     input.value = item.quantity
 
-    input.addEventListener("input", () => updatePriceAndQuantity(item.color, input.value, item))
+    input.addEventListener("input", () => updatePriceAndQuantity(item.color, item.id, input.value, item))
 
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
 
-function updatePriceAndQuantity(color, newValue, item) {
-    const itemToUpdate = cart.find((item) => item.color == color)
+function updatePriceAndQuantity(color, id, newValue, item) {
+    const itemToUpdate = cart.find((item) => item.color === color && item.id === id)
     console.log("voici l'item a mettre a jour", itemToUpdate) 
     itemToUpdate.quantity = Number(newValue)
     console.log("la nouvelle valeur est", newValue)
