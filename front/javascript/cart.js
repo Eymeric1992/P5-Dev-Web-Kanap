@@ -96,11 +96,11 @@ function addDeleteToSettings(settings, item) {
 
 function deleteItem(item) {
     const itemToDelete = cart.findIndex((product) => product.id === item.id && product.color === item.color)
-    cart.splice(itemToDelete, 0)
-displayTotalPrice()
-displayTotalQuantity()
-deleteDataFromCach(item)
-deleteArticleFromPage(item)
+    cart.splice(itemToDelete, 1)
+    displayTotalPrice()
+    displayTotalQuantity()
+    deleteDataFromCach(item)
+    deleteArticleFromPage(item)
 }
 
 function deleteArticleFromPage(item) {
@@ -124,25 +124,24 @@ function addQuantityToSettings(settings, item) {
     input.max = "100"
     input.value = item.quantity
 
-    input.addEventListener("input", () => updatePriceAndQuantity(item.id, input.value, item))
-    
+    input.addEventListener("input", () => updatePriceAndQuantity(item.color, input.value, item))
+
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
 
-function updatePriceAndQuantity(id, newValue, item) {
-   
-    const itemToUpdate = cart.find((item) => item.id === id )
-    console.log("voici l'item a mettre a jour",itemToUpdate)
+function updatePriceAndQuantity(color, newValue, item) {
+    const itemToUpdate = cart.find((item) => item.color == color)
+    console.log("voici l'item a mettre a jour", itemToUpdate) 
     itemToUpdate.quantity = Number(newValue)
-    console.log("la nouvelle valeur est", itemToUpdate.quantity)
+    console.log("la nouvelle valeur est", newValue)
     item.quantity = itemToUpdate.quantity
-    console.log("la quantité affiché est de",item.quantity)
-    
+    console.log("la quantité affiché est de", item.quantity)
+
     displayTotalQuantity()
     displayTotalPrice()
-   saveNewDataToCache(item)
-//deleteDataFromCach(item)
+    saveNewDataToCache(item)
+   // deleteDataFromCach(item)
 }
 
 
@@ -150,19 +149,15 @@ function updatePriceAndQuantity(id, newValue, item) {
 
 
 function deleteDataFromCach(item) {
-    const key = `${item.id}-${item.color}`
-    console.log("on retire cette key", key)
-    localStorage.removeItem(item.id)
+    const idcolor = item.id + item.color
+    localStorage.removeItem(idcolor)
 }
 
 function saveNewDataToCache(item) {
     const idcolor = item.id + item.color
     const dataToSave = JSON.stringify(item)
-    console.log("la data a sauvegardé est", dataToSave)
-  
+    localStorage.setItem(idcolor, dataToSave)
 
-localStorage.setItem(idcolor, dataToSave)
-console.log("la nouvelle valeur stockée est", localStorage)
 }
 
 function makeDescription(item) {
@@ -211,3 +206,84 @@ function makeImageDiv(item) {
     div.appendChild(image)
     return div
 }
+
+function submitForm(e) {
+    e.preventDefault()
+    if (cart.length === 0) {
+        alert("Please select items to buy")
+        return
+    }
+    if (isFormInvalid()) return
+    if (isEmailInvalid()) return
+    if (adressIsInValid()) return
+
+    const body = makeRequestBody()
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+}
+
+function makeRequestBody() {
+    let products = []
+    cart.forEach((item) => {
+        products.push(item.id)
+    })
+
+    const form = document.querySelector(".cart__order__form")
+    const firstName = form.elements.firstName.value
+    const lastName = form.elements.lastName.value
+    const address = form.elements.address.value
+    const city = form.elements.city.value
+    const email = form.elements.email.value
+    const body = {
+        contact: {
+            firstName: firstName,
+            lastName: lastName,
+            address: address,
+            city: city,
+            email: email
+        },
+        products: products         
+    }
+    return body
+}
+
+function getIdsFromCache() {
+    const numberOfProducts = localStorage.length
+    const ids = []
+    for (let i = 0; i < numberOfProducts; i++) {
+        const key = localStorage.key(i)
+        const id = key.split("-")[0]
+        ids.push(id)
+    }
+    return ids
+}
+
+function isEmailInvalid() {
+    const email = document.querySelector("#email").value
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (regex.test(email) === false) {
+        alert("Please enter valid email")
+        return true
+    }
+    return false
+}
+
+function isFormInvalid() {
+    const form = document.querySelector(".cart__order__form")
+    const inputs = form.querySelectorAll("input")
+    inputs.forEach((input) => {
+        if (input.value === "") {
+            alert("Please fill all the fields")
+            return true
+        }
+        return false
+    })
+}
+
