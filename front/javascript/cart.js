@@ -11,8 +11,6 @@ const orderButton = document.querySelector("#order")
 orderButton.addEventListener("click", (e) => submitForm(e))
 
 function retrieveItemsFromCache() {
-
-
     Object.entries(localCart).forEach((item) => {
         cart.push(item[1])
     })
@@ -46,7 +44,6 @@ function displayTotalPrice() {
         const totalUnitPrice = item.price * item.quantity
         total += totalUnitPrice
     })
-
     totalPrice.textContent = total
 }
 
@@ -132,32 +129,21 @@ function deleteDataFromCach(item) {
 function saveNewDataToCache(item) {
     localCart[item.id + item.color] = item
     localStorage.setItem("kanap_cart", JSON.stringify(localCart))
-
 }
 
 function makeDescription(item) {
     const description = document.createElement("div")
     description.classList.add("card__item__description")
-
     const h2 = document.createElement("h2")
     h2.textContent = item.name
-
     const p = document.createElement("p")
     p.textContent = item.color
-
     const p2 = document.createElement("p")
     p2.textContent = item.price + "€"
-
     description.appendChild(h2)
     description.appendChild(p)
     description.appendChild(p2)
-
-
-    //div.appendChild(description)
-    //return div
     return description
-
-
 }
 
 function displayArticle(article) {
@@ -174,7 +160,6 @@ function makeArticle(item) {
 function makeImageDiv(item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__img")
-
     const image = document.createElement("img")
     image.src = item.imageUrl
     image.alt = item.altTxt
@@ -185,35 +170,52 @@ function makeImageDiv(item) {
 function submitForm(e) {
     e.preventDefault()
     if (cart.length === 0) {
-        alert("Please select items to buy")
+      alert("Please select items to buy")
+      return
     }
-    else if (isFormInvalid()){alert("Please enter valid email")}
-     else if (isEmailInvalid()){ alert("Please fill all the fields")}
-else {
+    if (isFormInvalid()) return
+    if (isEmailInvalid()) return
 
-        const body = makeRequestBody()
-        fetch("http://localhost:3000/api/products/order", {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-                "Content-type": "application/json"
-            }
+    const body = makeRequestBody()
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            const orderId = data.orderId
+            window.location.href = "confirmation.html" + "?orderId=" + orderId
         })
-            .then((res) => res.json())
-            .then((data) => {
-                const orderId = data.orderId
-                window.location.href = "confirmation.html" + "?orderId=" + orderId
-                return console.log(data)
-            })
-    }
+        .catch((err) => console.error(err))
 }
+
+function isEmailInvalid() {
+    const email = document.querySelector("#email").value
+    const regex = /^[A-Za-z0-9+_.-]+@(.+)$/
+    if (regex.test(email) === false) {
+      alert("Veuillez rentrer une addresse mail existante")
+      return true
+    }
+    return false
+  }
+  
+  function isFormInvalid() {
+    const form = document.querySelector(".cart__order__form")
+    const inputs = form.querySelectorAll("input")
+    for (let inputs of form){
+      if (inputs.value === "") {
+        alert("le formulaire n'est pas rempli entierement")
+        return true}}
+      }
 
 function makeRequestBody() {
     let products = []
     cart.forEach((item) => {
         products.push(item.id)
     })
-
     const form = document.querySelector(".cart__order__form")
     const firstName = form.elements.firstName.value
     const lastName = form.elements.lastName.value
@@ -244,24 +246,3 @@ function getIdsFromCache() {
     return ids
 }
 
-function isEmailInvalid() {
-    const email = document.querySelector("#email").value
-    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    if (regex.test(email) === false) {
-        
-        return true
-    }
-    return false
-}
-
-function isFormInvalid() {
-    const form = document.querySelector(".cart__order__form")
-    const inputs = form.querySelectorAll("input")
-    inputs.forEach((input) => {
-        if (input.value === "") {
-           
-            return true
-        }
-        return false
-    })
-}

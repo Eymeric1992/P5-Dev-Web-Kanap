@@ -73,48 +73,47 @@ addToCart.addEventListener('click', function (e) {
 function saveCart(color, quantity,) {
     let cart = localStorage.getItem('kanap_cart')
     cart = JSON.parse(cart)
-if(cart != null)
-{    if (id + color in cart) {
-    let product = cart[id + color]
-    let newQuantity = Number(product.quantity) + Number(quantity)
-    const data = {
-        id: id,
-        color: color,
-        quantity: Number(newQuantity),
-        price: itemPrice,
-        imageUrl: imgUrl,
-        altTxt: altText,
-        name: articleName,
+    if (cart != null) {
+        if (id + color in cart) {
+            let product = cart[id + color]
+            let newQuantity = Number(product.quantity) + Number(quantity)
+            const data = {
+                id: id,
+                color: color,
+                quantity: Number(newQuantity),
+                price: itemPrice,
+                imageUrl: imgUrl,
+                altTxt: altText,
+                name: articleName,
+            }
+            cart[id + color] = data
+            localStorage.setItem('kanap_cart', JSON.stringify(cart))
+        } else {
+            const data = {
+                id: id,
+                color: color,
+                quantity: Number(quantity),
+                price: itemPrice,
+                imageUrl: imgUrl,
+                altTxt: altText,
+                name: articleName,
+            }
+            cart[id + color] = data
+            localStorage.setItem('kanap_cart', JSON.stringify(cart))
+        }
     }
-    cart[id + color] = data
-    localStorage.setItem('kanap_cart', JSON.stringify(cart))
-} else {
-    const data = {
-        id: id,
-        color: color,
-        quantity: Number(quantity),
-        price: itemPrice,
-        imageUrl: imgUrl,
-        altTxt: altText,
-        name: articleName,
+    else {
+        const data = {
+            id: id,
+            color: color,
+            quantity: Number(quantity),
+            price: itemPrice,
+            imageUrl: imgUrl,
+            altTxt: altText,
+            name: articleName,
+        }
+        let newCart = {}
+        newCart[id + color] = data
+        localStorage.setItem('kanap_cart', JSON.stringify(newCart))
     }
-    cart[id + color] = data
-    localStorage.setItem('kanap_cart', JSON.stringify(cart))
-}
-
-}else {
-    const data = {
-        id: id,
-        color: color,
-        quantity: Number(quantity),
-        price: itemPrice,
-        imageUrl: imgUrl,
-        altTxt: altText,
-        name: articleName,
-    }
-    let newCart = {}
-    newCart[id + color] = data
-    localStorage.setItem('kanap_cart', JSON.stringify(newCart))
-    
-}
 }
