@@ -7,14 +7,6 @@ const getProduits = async () => {
       kanapData = produits;
     });
 };
-/*async function getProduits() {
-  let res = await fetch('http://localhost:3000/api/products')
-  let produit = res.json()
-  return produit
-}
-
-kanapData = getProduits() */
-
 
 //La fonction suivante nous permet d'afficher l'ensemble de produits sur la page d'accueil.
 //Nous avons ajouté des balises dans le DOM grâce à inner.HTML

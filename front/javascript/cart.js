@@ -1,5 +1,8 @@
 
 const cart = []
+let tmp = localStorage.getItem("kanap_cart")
+const localCart = JSON.parse(tmp)
+
 
 retrieveItemsFromCache()
 cart.forEach((item) => displayItem(item))
@@ -8,12 +11,11 @@ const orderButton = document.querySelector("#order")
 orderButton.addEventListener("click", (e) => submitForm(e))
 
 function retrieveItemsFromCache() {
-    const numberOfItems = localStorage.length
-    for (let i = 0; i < numberOfItems; i++) {
-        const item = localStorage.getItem(localStorage.key(i)) || ""
-        const itemObject = JSON.parse(item)
-        cart.push(itemObject)
-    }
+
+
+    Object.entries(localCart).forEach((item) => {
+        cart.push(item[1])
+    })
 }
 
 function displayItem(item) {
@@ -112,7 +114,7 @@ function addQuantityToSettings(settings, item) {
 
 function updatePriceAndQuantity(color, id, newValue, item) {
     const itemToUpdate = cart.find((item) => item.color === color && item.id === id)
-    console.log("voici l'item a mettre a jour", itemToUpdate) 
+    console.log("voici l'item a mettre a jour", itemToUpdate)
     itemToUpdate.quantity = Number(newValue)
     console.log("la nouvelle valeur est", newValue)
     item.quantity = itemToUpdate.quantity
@@ -123,14 +125,13 @@ function updatePriceAndQuantity(color, id, newValue, item) {
 }
 
 function deleteDataFromCach(item) {
-    const idcolor = item.id + item.color
-    localStorage.removeItem(idcolor)
+    delete localCart[item.id + item.color]
+    localStorage.setItem("kanap_cart", JSON.stringify(localCart))
 }
 
 function saveNewDataToCache(item) {
-    const idcolor = item.id + item.color
-    const dataToSave = JSON.stringify(item)
-    localStorage.setItem(idcolor, dataToSave)
+    localCart[item.id + item.color] = item
+    localStorage.setItem("kanap_cart", JSON.stringify(localCart))
 
 }
 
@@ -185,26 +186,26 @@ function submitForm(e) {
     e.preventDefault()
     if (cart.length === 0) {
         alert("Please select items to buy")
-        return
     }
-    //if (isFormInvalid()) return
-    if (isEmailInvalid()) return
+    else if (isFormInvalid()){alert("Please enter valid email")}
+     else if (isEmailInvalid()){ alert("Please fill all the fields")}
+else {
 
-
-    const body = makeRequestBody()
-    fetch("http://localhost:3000/api/products/order", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-            "Content-type": "application/json"
-        }
-    })
-        .then((res) => res.json())
-        .then((data) =>  {
-            const orderId = data.orderId
-            window.location.href = "confirmation.html" + "?orderId=" + orderId
-        return console.log(data) 
-    })
+        const body = makeRequestBody()
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-type": "application/json"
+            }
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const orderId = data.orderId
+                window.location.href = "confirmation.html" + "?orderId=" + orderId
+                return console.log(data)
+            })
+    }
 }
 
 function makeRequestBody() {
@@ -227,7 +228,7 @@ function makeRequestBody() {
             city: city,
             email: email
         },
-        products: products         
+        products: products
     }
     return body
 }
@@ -247,21 +248,20 @@ function isEmailInvalid() {
     const email = document.querySelector("#email").value
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if (regex.test(email) === false) {
-        alert("Please enter valid email")
+        
         return true
     }
     return false
 }
-/*
+
 function isFormInvalid() {
     const form = document.querySelector(".cart__order__form")
     const inputs = form.querySelectorAll("input")
     inputs.forEach((input) => {
         if (input.value === "") {
-            alert("Please fill all the fields")
+           
             return true
         }
         return false
     })
 }
-*/
