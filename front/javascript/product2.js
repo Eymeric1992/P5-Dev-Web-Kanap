@@ -6,13 +6,12 @@ if (id != null) {
     let imgUrl, altText, articleName
 }
 
-
 fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
     .then((res) => displayData(res))
 
 function displayData(content) {
-    const { altTxt, colors, description, imageUrl, name, price} = content
+    const { altTxt, colors, description, imageUrl, name, price } = content
     makeImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
@@ -32,7 +31,6 @@ function makeImage(imageUrl, altTxt) {
     if (parent != null) parent.appendChild(image)
 }
 
-
 function makeTitle(name) {
     const h1 = document.querySelector("#title")
     if (h1 != null) h1.textContent = name
@@ -42,7 +40,6 @@ function makePrice(price) {
     const p = document.querySelector("#price")
     if (price != null) p.textContent = price
 }
-
 
 function makeDescription(description) {
     const p = document.querySelector("#description")
@@ -60,6 +57,7 @@ function makeColors(colors) {
         })
     }
 }
+
 let addToCart = document.querySelector("#addToCart")
 addToCart.addEventListener('click', function (e) {
     const color = document.querySelector("#colors").value
@@ -69,17 +67,12 @@ addToCart.addEventListener('click', function (e) {
         return
     }
     saveCart(color, quantity)
-
-
     window.location.href = "cart.html"
 })
 
-
 function saveCart(color, quantity,) {
-    
     let product = localStorage.getItem(id + color)
     product = JSON.parse(product)
-
     if (product == null || color !== product.color) {
         const data = {
             id: id,
@@ -90,11 +83,9 @@ function saveCart(color, quantity,) {
             altTxt: altText,
             name: articleName,
         }
-
         localStorage.setItem(id + color, JSON.stringify(data))
-    }  else {
-   
-       let newQuantity = Number(product.quantity) + Number(quantity)
+    } else {
+        let newQuantity = Number(product.quantity) + Number(quantity)
         const data = {
             id: id,
             color: color,
@@ -104,8 +95,6 @@ function saveCart(color, quantity,) {
             altTxt: altText,
             name: articleName,
         }
-
         localStorage.setItem(id + color, JSON.stringify(data))
     }
-
 }

@@ -1,1 +1,20 @@
-{/* <p>Commande validée ! <br>Votre numéro de commande est : <span id="orderId"><!-- 65431343444684674 --></span></p> */}
+const orderId = getOrderId()
+displayOrderId(orderId)
+removeAllCache()
+
+function getOrderId() {
+  const queryString = window.location.search
+  const urlParams = new URLSearchParams(queryString)
+  const orderId = urlParams.get("orderId")
+return orderId
+}
+
+function displayOrderId(orderId) {
+  const orderIdElement = document.getElementById("orderId")
+  orderIdElement.textContent = orderId
+}
+
+function removeAllCache() {
+  const cache = window.localStorage
+  cache.clear()
+}

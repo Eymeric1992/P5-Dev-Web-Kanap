@@ -1,6 +1,5 @@
 let kanapData = [];
 //Ici nous utilisons la méthode Fetch pour aller chercher les données (les canapés) à l'API et les afficher sur la page d'accueil
-
 const getProduits = async () => {
   await fetch('http://localhost:3000/api/products')
     .then((res) => res.json())
@@ -8,7 +7,6 @@ const getProduits = async () => {
       kanapData = produits;
     });
 };
-
 /*async function getProduits() {
   let res = await fetch('http://localhost:3000/api/products')
   let produit = res.json()
@@ -20,8 +18,6 @@ kanapData = getProduits() */
 
 //La fonction suivante nous permet d'afficher l'ensemble de produits sur la page d'accueil.
 //Nous avons ajouté des balises dans le DOM grâce à inner.HTML
-
-
 const kanapDisplay = async () => {
   await getProduits();
   console.log(kanapData)

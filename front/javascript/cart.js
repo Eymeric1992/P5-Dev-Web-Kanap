@@ -29,40 +29,24 @@ function displayItem(item) {
 
 function displayTotalQuantity() {
     const totalQuantity = document.querySelector("#totalQuantity")
-    //const total = cart.reduce((total, item) => total + item.quantity, 0)
-    //
-
     let totalUnit = 0
     cart.find(item => {
         totalUnit += item.quantity
     })
     console.log(totalUnit, cart)
-
     totalQuantity.textContent = totalUnit
 }
 
 function displayTotalPrice() {
     let total = 0;
     const totalPrice = document.querySelector("#totalPrice")
-    //const total = cart.reduce((total, item) => total + item.price * item.quantity, 0)
     cart.forEach(item => {
         const totalUnitPrice = item.price * item.quantity
         total += totalUnitPrice
     })
 
     totalPrice.textContent = total
-
-    /* const firstItem = cart [0]
- const firstItemTotalQuantity = firstItem.quantity * firstItem.price
- 
- console.log(firstItemTotalQuantity)*/
 }
-
-/*function makeCardItemContent(item) {
-    const div = document.createElement("div")
-    div.classList.add("card__item__content")
-
-}*/
 
 function makeCartContent(item) {
     const cardItemContent = document.createElement("div")
@@ -72,7 +56,6 @@ function makeCartContent(item) {
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
     return cardItemContent
-    //cardItemContent.appendChild(settings)
 }
 
 function makeSettings(item) {
@@ -87,7 +70,6 @@ function addDeleteToSettings(settings, item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => deleteItem(item))
-
     const p = document.createElement("p")
     p.textContent = "Supprimer"
     div.appendChild(p)
@@ -123,9 +105,7 @@ function addQuantityToSettings(settings, item) {
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
-
     input.addEventListener("input", () => updatePriceAndQuantity(item.color, item.id, input.value, item))
-
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
@@ -137,16 +117,10 @@ function updatePriceAndQuantity(color, id, newValue, item) {
     console.log("la nouvelle valeur est", newValue)
     item.quantity = itemToUpdate.quantity
     console.log("la quantité affiché est de", item.quantity)
-
     displayTotalQuantity()
     displayTotalPrice()
     saveNewDataToCache(item)
-   // deleteDataFromCach(item)
 }
-
-
-
-
 
 function deleteDataFromCach(item) {
     const idcolor = item.id + item.color
@@ -213,9 +187,9 @@ function submitForm(e) {
         alert("Please select items to buy")
         return
     }
-    if (isFormInvalid()) return
+    //if (isFormInvalid()) return
     if (isEmailInvalid()) return
-    if (adressIsInValid()) return
+
 
     const body = makeRequestBody()
     fetch("http://localhost:3000/api/products/order", {
@@ -226,7 +200,11 @@ function submitForm(e) {
         }
     })
         .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((data) =>  {
+            const orderId = data.orderId
+            window.location.href = "confirmation.html" + "?orderId=" + orderId
+        return console.log(data) 
+    })
 }
 
 function makeRequestBody() {
@@ -274,7 +252,7 @@ function isEmailInvalid() {
     }
     return false
 }
-
+/*
 function isFormInvalid() {
     const form = document.querySelector(".cart__order__form")
     const inputs = form.querySelectorAll("input")
@@ -286,4 +264,4 @@ function isFormInvalid() {
         return false
     })
 }
-
+*/
