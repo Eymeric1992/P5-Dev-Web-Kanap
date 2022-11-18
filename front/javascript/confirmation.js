@@ -2,6 +2,8 @@ const orderId = getOrderId()
 displayOrderId(orderId)
 removeAllCache()
 
+
+ // On récupere l'order 
 function getOrderId() {
   const queryString = window.location.search
   const urlParams = new URLSearchParams(queryString)
@@ -9,10 +11,14 @@ function getOrderId() {
 return orderId
 }
 
-function displayOrderId(orderId) {
+// On l'affiche
+
+function displayOrderId() {
   const orderIdElement = document.getElementById("orderId")
   orderIdElement.textContent = orderId
 }
+
+// On le supprime du localstorage
 
 function removeAllCache() {
   const cache = window.localStorage

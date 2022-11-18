@@ -1,6 +1,6 @@
 let kanapData = [];
 //Ici nous utilisons la méthode Fetch pour aller chercher les données (les canapés) à l'API et les afficher sur la page d'accueil
-const getProduits = async () => {
+const  getProduits = async () => {
   await fetch('http://localhost:3000/api/products')
     .then((res) => res.json())
     .then((produits) => {
@@ -17,14 +17,14 @@ const kanapDisplay = async () => {
   document.getElementById('items').innerHTML = kanapData
     .map(
       (kanap) => `<a href="./product.html?id=${kanap._id}">
-    <article>
-      <img src="${kanap.imageUrl}" alt="Photo d'un canapé bleu deux places${kanap.name}"/>
+   <article>
+      <img src="${kanap.imageUrl}" alt="${kanap.name}"/>
       <h3 class="productName">${kanap.name}</h3>
       <p class="productDescription">${kanap.description}</p>
     </article>
   </a>`
     )
-    .join('');
+    .join(''); // La méthode join() crée et renvoie une nouvelle chaîne de caractères en concaténant tous les éléments d'un tableau
 };
 
 kanapDisplay();
