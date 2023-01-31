@@ -165,7 +165,7 @@ function deleteDataFromCach(item) {
 function saveNewDataToCache(item) {
     delete item.price
     localCart[item.id + item.color] = item
-    localStorage.setItem("kanap_cart",JSON.stringify(localCart))
+    localStorage.setItem("kanap_cart", JSON.stringify(localCart))
 }
 
 // Cette fonction nous permet d'afficher la description du produit
@@ -225,10 +225,10 @@ function submitForm(e) {
     }
     if (isFormInvalid()) return
     if (isEmailInvalid()) return
-   if (isAdressPostInvalid()) return
-   if (isCityInvalid()) return
-   if (isFirstNameInvalid()) return
-   if (isLastNameInvalid()) return
+    if (isAdressPostInvalid()) return
+    if (isCityInvalid()) return
+    if (isFirstNameInvalid()) return
+    if (isLastNameInvalid()) return
 
     const body = makeRequestBody()
     fetch("http://localhost:3000/api/products/order", {
